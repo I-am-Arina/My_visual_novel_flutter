@@ -40,3 +40,19 @@ class Scene {
   final List<Node> nodes;
   const Scene(this.label, this.nodes);
 }
+
+// Узел для добавления очков
+class AddScoreNode implements Node {
+  final int points;
+  
+  AddScoreNode(this.points);
+}
+
+// Узел для условного перехода (будет использоваться для проверки концовки)
+class CondNode implements Node {
+  final String condition;  // пока оставим строкой, но в идеале сделать парсер
+  final String jumpIfTrue;
+  final String? jumpIfFalse;
+  
+  CondNode(this.condition, this.jumpIfTrue, [this.jumpIfFalse]);
+}

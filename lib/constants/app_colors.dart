@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const Color primaryBlue = Colors.blue;
-  static const Color lightBlue = Colors.lightBlue;
+  static const Color primaryBlue = Colors.pink;
+  static const Color lightBlue = Color.fromRGBO(255, 113, 206, 1) ;
 
   static const Color backgroundDark = Color(0xFF1a1a2e);
   static const Color backgroundDarker = Color(0xFF16213e);

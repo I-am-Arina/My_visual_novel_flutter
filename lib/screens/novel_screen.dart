@@ -52,6 +52,9 @@ class _NovelScreenState extends State<NovelScreen> {
       game.index = 0;
       game.bgPath = null;
       game.ended = false;
+      game.score = 0;      // ← добавляем
+      game.maxScore = 0;   // ← добавляем
+      
       engine = ScriptEngine(scenes!, game, onMusic: _audioManager.playMusic);
       engine!.next();
       setState(() {});

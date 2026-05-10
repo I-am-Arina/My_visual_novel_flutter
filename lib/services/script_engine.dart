@@ -47,6 +47,33 @@ class ScriptEngine {
       case EndNode _:
         state.ended = true;
         return false;
+      // В методе next() после обработки существующих узлов добавьте:
+      case AddScoreNode n:
+        state.score += n.points;
+        state.maxScore += n.points;  // увеличиваем и максимальный счёт
+        state.index++;
+        return next();
+
+      case CondNode n:
+        // Простейший парсер условий
+        bool conditionMet = false;
+        
+        if (n.condition.startsWith('score > maxScore / 2')) {
+          conditionMet = state.hasGoodEnding();
+        } else if (n.condition.startsWith('score > ')) {
+          int threshold = int.parse(n.condition.substring(8));
+          conditionMet = state.score > threshold;
+        } else if (n.condition.startsWith('score >= ')) {
+          int threshold = int.parse(n.condition.substring(9));
+          conditionMet = state.score >= threshold;
+        }
+        
+        if (conditionMet) {
+          _jump(n.jumpIfTrue);
+        } else if (n.jumpIfFalse != null) {
+          _jump(n.jumpIfFalse!);
+        }
+        return next();
     }
   }
 

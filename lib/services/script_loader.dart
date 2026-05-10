@@ -57,6 +57,21 @@ class ScriptRepository {
               nodes.add(EndNode());
               continue;
             }
+            // В методе loadScenesFromAsset(), внутри цикла по item, добавьте:
+
+            if (item.containsKey('add_score')) {
+              nodes.add(AddScoreNode(item['add_score'] as int));
+              continue;
+            }
+            if (item.containsKey('cond')) {
+              final inner = item['cond'] as YamlMap;
+              nodes.add(CondNode(
+                inner['condition'] as String,
+                inner['jump'] as String,
+                inner['jump_if_false'] as String?,
+              ));
+              continue;
+            }
           }
         }
 
