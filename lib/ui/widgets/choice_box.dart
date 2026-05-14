@@ -63,6 +63,7 @@ class ChoiceBox extends StatelessWidget {
                     ),
                     child: Text(
                       node.options[i].text,
+                      textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,

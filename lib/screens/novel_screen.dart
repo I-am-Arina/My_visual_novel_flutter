@@ -1,3 +1,4 @@
+// lib/screens/novel_screen.dart
 import 'package:flutter/material.dart';
 import '../models/game_state.dart';
 import '../models/script_nodes.dart';
@@ -27,6 +28,8 @@ class _NovelScreenState extends State<NovelScreen> {
   String? _errorMessage;
   bool _isLoading = true;
   final _audioManager = AudioManager();
+  double _volume = 0.7;
+  bool _showVolumeSlider = false;
 
   @override
   void initState() {
@@ -37,6 +40,7 @@ class _NovelScreenState extends State<NovelScreen> {
 
   Future<void> _initializeAudio() async {
     await _audioManager.initialize();
+    _volume = _audioManager.volume;
   }
 
   Future<void> _load() async {
@@ -52,8 +56,8 @@ class _NovelScreenState extends State<NovelScreen> {
       game.index = 0;
       game.bgPath = null;
       game.ended = false;
-      game.score = 0;      // ← добавляем
-      game.maxScore = 0;   // ← добавляем
+      game.score = 0;
+      game.maxScore = 0;
       
       engine = ScriptEngine(scenes!, game, onMusic: _audioManager.playMusic);
       engine!.next();
@@ -137,21 +141,62 @@ class _NovelScreenState extends State<NovelScreen> {
                   ),
                   const SizedBox(height: 8),
                   FloatingActionButton.small(
-                    onPressed: _audioManager.isPlaying
-                        ? () {
-                            _audioManager.stopMusic();
-                            setState(() {});
-                          }
-                        : null,
+                    onPressed: () async {
+                      await _audioManager.toggleMusic();
+                      setState(() {});
+                    },
                     backgroundColor:
                         AppColors.backgroundDark.withValues(alpha: 0.7),
                     child: Icon(
                       _audioManager.isPlaying
-                          ? Icons.volume_off
-                          : Icons.volume_up,
+                          ? Icons.volume_up
+                          : Icons.volume_off,
                       color: AppColors.textWhite,
                     ),
                   ),
+                  const SizedBox(height: 8),
+                  FloatingActionButton.small(
+                    onPressed: () {
+                      setState(() {
+                        _showVolumeSlider = !_showVolumeSlider;
+                      });
+                    },
+                    backgroundColor:
+                        AppColors.backgroundDark.withValues(alpha: 0.7),
+                    child: const Icon(
+                      Icons.settings_voice,
+                      color: AppColors.textWhite,
+                    ),
+                  ),
+                  if (_showVolumeSlider)
+                    Container(
+                      margin: const EdgeInsets.only(top: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: AppColors.backgroundDark.withValues(alpha: 0.7),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: SizedBox(
+                        height: 100,
+                        child: RotatedBox(
+                          quarterTurns: 3,
+                          child: Slider(
+                            value: _volume,
+                            min: 0,
+                            max: 1,
+                            divisions: 10,
+                            activeColor: AppColors.textWhite,
+                            inactiveColor: AppColors.textWhite70,
+                            onChanged: (value) async {
+                              setState(() {
+                                _volume = value;
+                              });
+                              await _audioManager.setVolume(value);
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
